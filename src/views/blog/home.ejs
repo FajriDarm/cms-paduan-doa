@@ -1,0 +1,582 @@
+<% const totalPosts = typeof total === "number" ? total : Array.isArray(posts) ? posts.length : 0; %>
+<% const categoryCount = Array.isArray(categories) ? categories.length : 0; %>
+<% const tagCount = Array.isArray(tags) ? tags.length : 0; %>
+
+<style>
+  .home-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0.5rem 0 1rem;
+  }
+
+  .hero-premium {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(232, 216, 198, 0.95);
+    border-radius: 2rem;
+    padding: 2rem;
+    background:
+      radial-gradient(circle at 10% 10%, rgba(255, 226, 208, 0.85), transparent 34%),
+      radial-gradient(circle at 88% 6%, rgba(122, 174, 221, 0.18), transparent 28%),
+      linear-gradient(135deg, rgba(255, 253, 248, 0.97) 0%, rgba(250, 239, 227, 0.94) 44%, rgba(239, 247, 253, 0.96) 100%);
+    box-shadow: 0 24px 60px rgba(104, 86, 63, 0.1);
+  }
+
+  .hero-premium::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(119, 174, 221, 0.14) 1px, transparent 1.2px) 0 0 / 28px 28px,
+      radial-gradient(circle at 14px 14px, rgba(255, 183, 122, 0.08) 1px, transparent 1.2px) 0 0 / 28px 28px;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .hero-premium > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.42rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(232, 216, 198, 0.95);
+    background: rgba(255, 255, 255, 0.76);
+    color: #4b6c85;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-title {
+    max-width: 14ch;
+    margin-top: 1.2rem;
+    font-size: clamp(2.2rem, 5vw, 4.15rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.05em;
+    color: #244055;
+  }
+
+  .hero-desc {
+    max-width: 46rem;
+    margin-top: 1rem;
+    font-size: 1.02rem;
+    line-height: 1.85;
+    color: #6e7f90;
+  }
+
+  .hero-quote {
+    max-width: 42rem;
+    margin-top: 1rem;
+    border-left: 4px solid rgba(255, 183, 122, 0.85);
+    border-radius: 0 1rem 1rem 0;
+    background: linear-gradient(135deg, rgba(255, 243, 234, 0.96) 0%, rgba(234, 244, 252, 0.96) 100%);
+    padding: 0.95rem 1.1rem;
+    color: #4b5f72;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    box-shadow: 0 12px 28px rgba(104, 86, 63, 0.06);
+  }
+
+  .hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+    max-width: 44rem;
+    margin-top: 1.5rem;
+  }
+
+  .hero-metric {
+    border: 1px solid rgba(232, 216, 198, 0.9);
+    border-radius: 1.2rem;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1rem 1rem 0.95rem;
+    box-shadow: 0 12px 24px rgba(104, 86, 63, 0.05);
+  }
+
+  .hero-metric span {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #7f8d9b;
+  }
+
+  .hero-metric strong {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1.55rem;
+    line-height: 1.1;
+    color: #244055;
+  }
+
+  .tech-stack {
+    margin-top: 1.3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  .tech-badge {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(232, 216, 198, 0.95);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.86);
+    padding: 0.42rem 0.9rem;
+    color: #4d6a82;
+    font-size: 0.77rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 10px 20px rgba(104, 86, 63, 0.04);
+  }
+
+  .hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.6rem;
+  }
+
+  .hero-footnote {
+    margin-top: 1.1rem;
+    font-size: 0.8rem;
+    color: #7c8d9c;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .modern-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.8fr);
+    gap: 1.6rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .post-card-modern {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 100%;
+    border: 1px solid rgba(232, 216, 198, 0.9);
+    border-radius: 1.45rem;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 14px 32px rgba(104, 86, 63, 0.06);
+    transition:
+      transform 220ms ease,
+      box-shadow 220ms ease,
+      border-color 220ms ease;
+  }
+
+  .post-card-modern:hover {
+    transform: translateY(-5px);
+    border-color: rgba(119, 174, 221, 0.3);
+    box-shadow: 0 24px 52px rgba(104, 86, 63, 0.12);
+  }
+
+  .card-image {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255, 225, 207, 0.9), transparent 35%),
+      linear-gradient(135deg, #eef5fb, #f8f1e8);
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 400ms ease;
+  }
+
+  .post-card-modern:hover .card-image img {
+    transform: scale(1.04);
+  }
+
+  .card-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.35rem 1.35rem 1.45rem;
+  }
+
+  .post-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    width: fit-content;
+    border-radius: 999px;
+    background: rgba(119, 174, 221, 0.1);
+    color: #4c83b4;
+    padding: 0.32rem 0.7rem;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+
+  .post-title-card {
+    margin-top: 0.85rem;
+    font-size: 1.18rem;
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: -0.03em;
+    color: #244055;
+  }
+
+  .post-title-card a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .post-title-card a:hover {
+    color: #4c83b4;
+  }
+
+  .post-excerpt {
+    margin-top: 0.8rem;
+    color: #6e7f90;
+    font-size: 0.92rem;
+    line-height: 1.75;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .post-meta {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-top: 1px solid rgba(232, 216, 198, 0.95);
+    padding-top: 1rem;
+    color: #7f8d9b;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .sidebar-card {
+    margin-bottom: 1.35rem;
+    border: 1px solid rgba(232, 216, 198, 0.9);
+    border-radius: 1.45rem;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 1.35rem;
+    box-shadow: 0 14px 32px rgba(104, 86, 63, 0.05);
+  }
+
+  .sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid rgba(232, 216, 198, 0.95);
+    color: #244055;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .tag-group,
+  .category-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .pill-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid rgba(232, 216, 198, 0.95);
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(248, 241, 232, 0.96));
+    padding: 0.42rem 0.88rem;
+    color: #4b6c85;
+    font-size: 0.77rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .pill-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(119, 174, 221, 0.3);
+    box-shadow: 0 12px 24px rgba(104, 86, 63, 0.08);
+  }
+
+  .pagination-modern {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  .pagination-modern a,
+  .pagination-modern span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.9rem;
+    border: 1px solid rgba(232, 216, 198, 0.95);
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 241, 232, 0.96));
+    color: #4b6c85;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 12px 24px rgba(104, 86, 63, 0.05);
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .pagination-modern a:hover {
+    transform: translateY(-1px);
+    border-color: rgba(119, 174, 221, 0.28);
+    box-shadow: 0 16px 28px rgba(104, 86, 63, 0.08);
+  }
+
+  .pagination-modern .active-page {
+    background: linear-gradient(135deg, #7cb4e0 0%, #5b8fbe 100%);
+    border-color: transparent;
+    color: #ffffff;
+  }
+
+  @media (max-width: 960px) {
+    .modern-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-title {
+      max-width: none;
+    }
+
+    .hero-metrics {
+      grid-template-columns: 1fr;
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-container {
+      padding-inline: 0.35rem;
+    }
+
+    .hero-premium {
+      padding: 1.4rem;
+      border-radius: 1.55rem;
+    }
+  }
+</style>
+
+<div class="home-container">
+  <section class="hero-premium">
+    <div class="hero-badge">
+      <i class="fas fa-moon"></i>
+      PANDUAN DOA DAN IBADAH HARIAN MODERN
+    </div>
+
+    <h1 class="hero-title">Panduan doa harian, dzikir pagi petang, dan bacaan ibadah yang tenang dibaca.</h1>
+    <p class="hero-desc">
+      Ruang baca untuk doa harian, dzikir, panduan sholat, dan artikel islami yang terasa ringan, bersih, dan nyaman untuk dibaca di desktop maupun mobile.
+    </p>
+
+    <div class="hero-quote">
+      "Dan dengan mengingat Allah, hati menjadi tenang."
+    </div>
+
+    <div class="hero-metrics">
+      <div class="hero-metric">
+        <span>Artikel terbit</span>
+        <strong><%= totalPosts.toLocaleString("id-ID") %></strong>
+      </div>
+      <div class="hero-metric">
+        <span>Kategori aktif</span>
+        <strong><%= categoryCount.toLocaleString("id-ID") %></strong>
+      </div>
+      <div class="hero-metric">
+        <span>Tag tematik</span>
+        <strong><%= tagCount.toLocaleString("id-ID") %></strong>
+      </div>
+    </div>
+
+    <div class="tech-stack" aria-label="Topik unggulan">
+      <span class="tech-badge">Doa Harian</span>
+      <span class="tech-badge">Dzikir Pagi &amp; Petang</span>
+      <span class="tech-badge">Panduan Ibadah</span>
+      <span class="tech-badge">Artikel Islami</span>
+      <span class="tech-badge">Edukasi Muslim Modern</span>
+      <span class="tech-badge">Bacaan Doa dan Sholat</span>
+    </div>
+
+    <div class="hero-buttons">
+      <a href="#daftar-artikel" class="wp-btn wp-btn-primary">
+        <i class="fas fa-book-open"></i>
+        Jelajahi artikel
+      </a>
+      <a href="/search" class="wp-btn wp-btn-secondary">
+        <i class="fas fa-search"></i>
+        Cari doa
+      </a>
+    </div>
+
+    <div class="hero-footnote">
+      <i class="fas fa-circle-info"></i>
+      Semua artikel dan kategori diambil langsung dari database yang aktif.
+    </div>
+  </section>
+
+  <div class="modern-grid">
+    <div>
+      <div id="daftar-artikel" class="posts-grid">
+        <% if (typeof posts !== "undefined" && posts && posts.length) { %>
+          <% posts.forEach((post) => { %>
+            <article class="post-card-modern">
+              <div class="card-image">
+                <% if (post.featuredImage) { %>
+                  <img src="<%= post.featuredImage %>" alt="<%= post.title %>" loading="lazy" />
+                <% } else { %>
+                  <div class="flex h-full w-full items-center justify-center text-[#9db3c5]">
+                    <i class="fas fa-mosque fa-2x"></i>
+                  </div>
+                <% } %>
+              </div>
+
+              <div class="card-content">
+                <span class="post-status">
+                  <i class="far fa-newspaper"></i>
+                  <%= post.status ? post.status.toUpperCase() : "PUBLISHED" %>
+                </span>
+
+                <h2 class="post-title-card">
+                  <a href="/posts/<%= post.slug %>"><%= post.title %></a>
+                </h2>
+
+                <p class="post-excerpt">
+                  <%= post.subheadline || post.excerpt || (post.content ? post.content.replace(/<[^>]*>/g, "").slice(0, 140) : "Tidak ada ringkasan tersedia.") %>
+                </p>
+
+                <div class="post-meta">
+                  <span>
+                    <i class="far fa-clock"></i>
+                    <%= post.readingTime || "2" %> min read
+                  </span>
+                  <span>
+                    <i class="fas fa-eye"></i>
+                    <%= post.viewCount || 0 %> views
+                  </span>
+                </div>
+              </div>
+            </article>
+          <% }) %>
+        <% } else { %>
+          <div style="grid-column: 1 / -1; border: 1px solid rgba(232, 216, 198, 0.9); border-radius: 1.45rem; background: rgba(255, 255, 255, 0.92); padding: 3rem; text-align: center; box-shadow: 0 14px 32px rgba(104, 86, 63, 0.05);">
+            <i class="fas fa-book-open fa-3x" style="color: #b9cad8;"></i>
+            <p style="margin-top: 1rem; color: #6e7f90;">Belum ada artikel yang terbit. Silakan tambah konten dari dashboard.</p>
+          </div>
+        <% } %>
+      </div>
+
+      <% if (typeof pagination !== "undefined" && pagination && pagination.totalPages > 1) { %>
+        <div class="pagination-modern">
+          <% if (pagination.hasPrev) { %>
+            <a href="?page=<%= pagination.prevPage %>">
+              <i class="fas fa-chevron-left"></i>
+              Sebelumnya
+            </a>
+          <% } else { %>
+            <span style="opacity: 0.45;">
+              <i class="fas fa-chevron-left"></i>
+              Sebelumnya
+            </span>
+          <% } %>
+
+          <% let startPage = Math.max(1, pagination.page - 2); let endPage = Math.min(pagination.totalPages, pagination.page + 2); if (endPage - startPage < 4) { if (startPage > 1) startPage = Math.max(1, endPage - 4); if (endPage < pagination.totalPages) endPage = Math.min(pagination.totalPages, startPage + 4); } for (let p = startPage; p <= endPage; p++) { %>
+            <% if (p === pagination.page) { %>
+              <span class="active-page"><%= p %></span>
+            <% } else { %>
+              <a href="?page=<%= p %>"><%= p %></a>
+            <% } %>
+          <% } %>
+
+          <% if (pagination.hasNext) { %>
+            <a href="?page=<%= pagination.nextPage %>">
+              Selanjutnya
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          <% } else { %>
+            <span style="opacity: 0.45;">
+              Selanjutnya
+              <i class="fas fa-chevron-right"></i>
+            </span>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+
+    <aside>
+      <div class="sidebar-card">
+        <div class="sidebar-title">
+          <i class="fas fa-folder-tree" style="color: #5b8fbe;"></i>
+          Kategori
+        </div>
+        <div class="category-group">
+          <% if (typeof categories !== "undefined" && categories && categories.length) { %>
+            <% categories.forEach((category) => { %>
+              <a href="/categories/<%= category.slug %>" class="pill-link">
+                <i class="fas fa-tag"></i>
+                <%= category.name %>
+              </a>
+            <% }) %>
+          <% } else { %>
+            <span class="pill-link" style="background: #f7f1e7;">Tidak ada kategori</span>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">
+          <i class="fas fa-hashtag" style="color: #5b8fbe;"></i>
+          Populer Tags
+        </div>
+        <div class="tag-group">
+          <% if (typeof tags !== "undefined" && tags && tags.length) { %>
+            <% tags.forEach((tag) => { %>
+              <a href="/tags/<%= tag.slug %>" class="pill-link">#<%= tag.name %></a>
+            <% }) %>
+          <% } else { %>
+            <span class="pill-link" style="background: #f7f1e7;">Belum ada tag</span>
+          <% } %>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

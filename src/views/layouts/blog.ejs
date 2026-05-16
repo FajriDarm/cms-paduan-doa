@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="id" class="h-full">
+  <head>
+    <% const pageMeta = typeof meta !== "undefined" && meta ? meta : {}; %>
+    <% const siteTitle = "Panduandoa"; %>
+    <% const year = typeof currentYear !== "undefined" ? currentYear : new Date().getFullYear(); %>
+    <% const pageTitle = typeof title !== "undefined" ? title : ""; %>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= pageMeta.title || pageTitle || siteTitle %></title>
+    <script>
+      document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
+    </script>
+    <link rel="stylesheet" href="/css/app.css" />
+    <meta name="description" content="<%= pageMeta.description || 'Panduan doa harian modern, dzikir pagi petang, dan artikel islami yang nyaman dibaca' %>" />
+    <% if (pageMeta.robots) { %>
+      <meta name="robots" content="<%= pageMeta.robots %>" />
+    <% } %>
+    <% if (pageMeta.canonical) { %>
+      <link rel="canonical" href="<%= pageMeta.canonical %>" />
+    <% } %>
+    <% if (pageMeta.image) { %>
+      <meta property="og:image" content="<%= pageMeta.image %>" />
+    <% } %>
+    <% if (pageMeta.canonical) { %>
+      <meta property="og:url" content="<%= pageMeta.canonical %>" />
+    <% } %>
+    <meta property="og:title" content="<%= pageMeta.title || pageTitle || siteTitle %>" />
+    <meta property="og:description" content="<%= pageMeta.description || 'Panduan doa harian modern, dzikir pagi petang, dan artikel islami yang nyaman dibaca' %>" />
+    <meta property="og:type" content="<%= pageMeta.type || 'website' %>" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="<%= pageMeta.title || pageTitle || siteTitle %>" />
+    <meta name="twitter:description" content="<%= pageMeta.description || 'Panduan doa harian modern, dzikir pagi petang, dan artikel islami yang nyaman dibaca' %>" />
+    <% if (pageMeta.image) { %>
+      <meta name="twitter:image" content="<%= pageMeta.image %>" />
+    <% } %>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Plus Jakarta Sans", "Inter", "ui-sans-serif", "system-ui", "sans-serif"]
+            },
+            boxShadow: {
+              soft: "0 18px 40px rgba(104, 86, 63, 0.08)"
+            },
+            colors: {
+              brand: {
+                50: "#f4fbff",
+                100: "#e4f3ff",
+                200: "#cfe7f8",
+                500: "#77aedd",
+                600: "#5b8fbe",
+                700: "#4c83b4"
+              }
+            }
+          }
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script src="/js/app.js" defer></script>
+  </head>
+  <body class="min-h-full wp-shell blog-shell">
+    <script>
+      window.CMS_CSRF_TOKEN = "";
+      window.CMS_INITIAL_NOTICES = <%- JSON.stringify((typeof notice !== "undefined" && notice) ? [{ type: typeof noticeType !== "undefined" && noticeType ? noticeType : "info", message: notice }] : []) %>;
+    </script>
+    <header class="sticky top-0 z-40 px-2 pt-2 sm:px-3 lg:px-4">
+      <div class="blog-nav-shell mx-auto w-full max-w-[96rem]">
+        <div class="flex flex-col gap-2.5 px-3 py-3 lg:flex-row lg:items-center lg:gap-4 lg:px-4">
+          <a href="/" class="blog-brand-card group">
+            <span class="blog-brand-mark inline-flex h-11 w-11 items-center justify-center text-sm font-bold leading-none text-white transition-transform duration-200 group-hover:-translate-y-0.5">PD</span>
+            <span class="blog-brand-copy">
+              <span class="blog-brand-name"><%= siteTitle %></span>
+              <span class="blog-brand-subtitle">Panduan doa harian modern</span>
+            </span>
+          </a>
+
+          <form action="/search" method="get" class="w-full lg:ml-auto lg:max-w-xl">
+            <div class="blog-search-card">
+              <label class="relative block">
+                <span class="sr-only">Cari artikel</span>
+                <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400 transition-colors duration-200">
+                  <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 20 20" fill="none">
+                    <path d="M8.5 14a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11Z" stroke="currentColor" stroke-width="1.8" />
+                    <path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <input
+                  name="q"
+                  placeholder="Cari doa, dzikir, atau panduan ibadah..."
+                  class="blog-search-input wp-input w-full border-[color:var(--wp-border)] bg-[color:var(--wp-surface)]/85 pl-11 text-sm shadow-none transition-colors duration-200"
+                />
+              </label>
+            </div>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main class="relative z-10 mx-auto max-w-7xl px-4 py-8 lg:px-8">
+      <%- body %>
+    </main>
+
+    <footer class="border-t border-[color:var(--wp-border)] bg-[color:var(--wp-surface)]/90 backdrop-blur-sm">
+      <div class="mx-auto grid max-w-7xl gap-8 px-4 py-10 lg:grid-cols-[1.5fr_1fr] lg:px-8">
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-bold text-white shadow-sm">PD</span>
+            <span><%= siteTitle %></span>
+          </div>
+          <p class="max-w-xl text-sm leading-7 text-slate-500 dark:text-slate-400">
+            Platform artikel islami modern untuk doa harian, dzikir pagi dan petang, panduan ibadah, dan bacaan sholat yang nyaman dibaca.
+          </p>
+          <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Soft bright islamic ui</p>
+        </div>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          <div>
+            <h2 class="text-sm font-semibold uppercase tracking-[0.32em] text-slate-500 dark:text-slate-400">Navigation</h2>
+            <ul class="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+              <li><a class="transition-colors hover:text-brand-600" href="/">Home</a></li>
+              <li><a class="transition-colors hover:text-brand-600" href="/search">Search</a></li>
+              <li><a class="transition-colors hover:text-brand-600" href="/admin/login">Admin</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="text-sm font-semibold uppercase tracking-[0.32em] text-slate-500 dark:text-slate-400">Contact</h2>
+            <p class="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
+              Silakan kelola artikel, kategori, dan media dari dashboard jika ingin menambahkan konten terbaru.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-[color:var(--wp-border)]">
+        <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 text-sm text-slate-500 dark:text-slate-400 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <div>Copyright <%= year %> <%= siteTitle %>.</div>
+          <div>Doa harian, dzikir, dan panduan ibadah dalam pengalaman baca yang tenang.</div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
