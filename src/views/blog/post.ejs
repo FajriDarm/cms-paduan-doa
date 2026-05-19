@@ -283,7 +283,7 @@
         <div class="mt-6 grid gap-4 md:grid-cols-2">
           <% if (related.length) { %>
             <% related.forEach((item) => { %>
-              <a href="/posts/<%= item.slug %>" class="group rounded-2xl border border-[color:var(--wp-border)] bg-[color:var(--wp-surface-2)] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+              <a href="/posts/<%= item.slug %>" target="_blank" rel="noopener noreferrer" class="group rounded-2xl border border-[color:var(--wp-border)] bg-[color:var(--wp-surface-2)] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
                 <div class="text-xs font-semibold uppercase tracking-[0.28em] text-brand-600">Artikel terkait</div>
                 <div class="mt-3 text-lg font-semibold leading-snug text-slate-950 transition-colors group-hover:text-brand-600 dark:text-white"><%= item.title %></div>
                 <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
